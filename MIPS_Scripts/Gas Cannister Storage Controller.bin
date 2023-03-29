@@ -1,0 +1,41 @@
+alias dGasTank d0
+alias dOutput1 d1
+alias dOutput2 d2
+alias dLampError d3
+alias dLampPass d5
+alias mHash d4
+
+alias vOccupied r0
+alias vOccupantPressure r1
+alias vOccupantDamage r2
+alias vOccupantHash r3
+alias vHasDamage r4
+alias vHasNotDamage r5
+
+
+main:
+# Read the data from the Gas Tank
+ls vOccupied dGasTank 0 Occupied
+ls vOccupantPressure dGasTank 0 Pressure
+ls vOccupantDamage dGasTank 0 Damage
+ls vOccupantHash dGasTank 0 OccupantHash
+s dOutput1 Setting vOccupied
+div vOccupantPressure vOccupantPressure 1000
+s dOutput2 Setting vOccupantPressure
+sgtz vHasDamage vOccupantDamage
+beqal vHasDamage 1 hasDamage
+beqal vHasDamage 0 hasNotDamage
+s dLampError On vHasDamage
+s dLampPass On vHasNotDamage
+s mHash Setting vOccupantHash
+j main
+
+hasDamage:
+s dOutput1 Color 4
+move vHasNotDamage 0
+j ra
+
+hasNotDamage:
+s dOutput1 Color 2
+move vHasNotDamage 1
+j ra
