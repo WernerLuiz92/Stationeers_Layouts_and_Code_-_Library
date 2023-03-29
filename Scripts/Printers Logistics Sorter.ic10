@@ -1,0 +1,38 @@
+# Script name: Printers Logistics Controller (WORK IN PROGRESS)
+# Description: This script is used to control the logistics of the printers
+#  		  	   in the printers room. It is used to control the sorter and
+#  		  	   separate the ingots from the other items. It also controls
+#  		  	   if the printer is accepting ingots or not.
+# Author: Werner L. Gottschalt
+
+start:
+# Define the devices
+alias dSorter d0
+alias dPrinter d1
+alias dGreenLight d2
+alias dRedLight d3
+alias dDump1 d4
+alias dDump2 d5
+# Define the registrators
+alias vSorterInputSlot r0
+alias vSorterInputClass r1
+alias vGreenLightState r2
+alias vRedLightState r3
+# Define the constants
+define cDeviceLocked 1
+define cIngot 19
+define cSorterMode 2
+define cOutputIngot 1
+define cOutputOther 0
+
+main:
+	s dDump1 Setting cDeviceLocked
+	s dSorter Mode cSorterMode
+	ls vSorterInputSlot dSorter 0 Occupied
+	ls vSorterInputClass dSorter 0 Class
+	s dDump2 Setting vSorterInputClass
+	
+	l vGreenLightState dGreenLight On
+	l vRedLightState dRedLight On
+	
+j main
