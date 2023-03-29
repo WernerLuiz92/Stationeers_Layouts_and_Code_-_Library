@@ -9,7 +9,6 @@ alias dGreenLight d2
 alias dRedLight d3
 alias dDump1 d4
 alias dDump2 d5
-
 # Define the registrators and constants
 alias vSorterInputSlot r0
 alias vSorterInputClass r1
@@ -21,7 +20,6 @@ define cSorterMode 2
 define cOutputIngot 1
 define cOutputOther 0
 
-
 main:
 s dDump1 Setting cDeviceLocked
 s dSorter Mode cSorterMode
@@ -31,6 +29,5 @@ s dDump2 Setting vSorterInputClass
 
 l vGreenLightState dGreenLight On
 l vRedLightState dRedLight On
-
 
 j main
