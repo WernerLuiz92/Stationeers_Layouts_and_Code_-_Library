@@ -1,0 +1,36 @@
+#MIPS Script to separate the output of printers and
+# redirect conditionally to the proper port of the
+# sorter.
+start:
+# Define the devices
+alias dSorter d0
+alias dPrinter d1
+alias dGreenLight d2
+alias dRedLight d3
+alias dDump1 d4
+alias dDump2 d5
+
+# Define the registrators and constants
+alias vSorterInputSlot r0
+alias vSorterInputClass r1
+alias vGreenLightState r2
+alias vRedLightState r3
+define cDeviceLocked 1
+define cIngot 19
+define cSorterMode 2
+define cOutputIngot 1
+define cOutputOther 0
+
+
+main:
+s dDump1 Setting cDeviceLocked
+s dSorter Mode cSorterMode
+ls vSorterInputSlot dSorter 0 Occupied
+ls vSorterInputClass dSorter 0 Class
+s dDump2 Setting vSorterInputClass
+
+l vGreenLightState dGreenLight On
+l vRedLightState dRedLight On
+
+
+j main
