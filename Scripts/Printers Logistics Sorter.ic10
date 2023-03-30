@@ -1,38 +1,58 @@
-# Script name: Printers Logistics Controller (WORK IN PROGRESS)
-# Description: This script is used to control the logistics of the printers
-#  		  	   in the printers room. It is used to control the sorter and
-#  		  	   separate the ingots from the other items. It also controls
-#  		  	   if the printer is accepting ingots or not.
+# Script name: Printers Logistics Controller 
+# (WORK IN PROGRESS)
+# Description: This script is used to control the 
+# logistics of the printers station. It is used to
+# control the sorter and separate the ingots from
+# the other items. It also controls if the printer
+# is accepting ingots or not.
 # Author: Werner L. Gottschalt
 
 start:
 # Define the devices
 alias dSorter d0
 alias dPrinter d1
-alias dGreenLight d2
-alias dRedLight d3
-alias dDump1 d4
-alias dDump2 d5
+
 # Define the registrators
 alias vSorterInputSlot r0
 alias vSorterInputClass r1
-alias vGreenLightState r2
-alias vRedLightState r3
+alias vPrinterAccept r2 # Printer purge state
+
 # Define the constants
-define cDeviceLocked 1
-define cIngot 19
-define cSorterMode 2
-define cOutputIngot 1
-define cOutputOther 0
+define cIngot 19 # Ingot Class
+define cPrinterNotAccept 1 # Printer is Purging
+define cSorterMode 2 # Logic Mode
+define cOutputIngot 1 # Right Side
+define cOutputOther 0 # Left Side
+
+# Set the sorter to logic mode
+s dSorter Mode cSorterMode
 
 main:
-	s dDump1 Setting cDeviceLocked
-	s dSorter Mode cSorterMode
+	# Get the input slot and class
 	ls vSorterInputSlot dSorter 0 Occupied
 	ls vSorterInputClass dSorter 0 Class
-	s dDump2 Setting vSorterInputClass
+	# Get the printer purge state
+	l vPrinterAccept dPrinter Open
 	
-	l vGreenLightState dGreenLight On
-	l vRedLightState dRedLight On
+	# If the sorter is empty, wait for it to fill
+	beq vSorterInputSlot 0 main
 	
+# If the printer is purging, send the item to the 
+	# other side
+	beq vPrinterAccept cPrinterNotAccept otherPort
+	
+	# If the item is an ingot, send it to the printer
+	beq vSorterInputClass cIngot ingotPort
+	
+	# If the item is not an ingot, send it to the
+	# other side
+	bne vSorterInputClass cIngot otherPort
+j main
+
+ingotPort:
+s dSorter Output cOutputIngot
+j main
+
+otherPort:
+s dSorter Output cOutputOther
 j main
