@@ -1,0 +1,98 @@
+alias dDial d0
+alias dHashMemory d1
+alias dSorter d2
+alias dVarDump1 d3
+alias dVarDump2 d4
+alias vSorterInputHash r0
+alias vDialValue r1
+alias vSelectedHash r2
+alias vOutputPort r3
+alias vIndex r4
+alias vInitialIndex r5
+s dSorter Mode 2
+s dDial Mode 28
+s dDial Setting 0
+s dHashMemory Setting 0
+main:
+ # If the dial position is greater than 27, reset it to 0
+ # This is to made the dial loop
+ l vDialValue dDial Setting
+ bgtal vDialValue 27 fResetDial
+
+ ls vSorterInputHash dSorter 0 OccupantHash
+ l vDialValue dDial Setting
+ move vIndex 30
+ # Multiply by 3 the vDiaValue and then add the vIndex
+ mul vInitialIndex vDialValue 2
+ add vIndex vInitialIndex vIndex
+ s dVarDump1 Setting vIndex
+ j vIndex
+
+ move vSelectedHash 0
+ j fOutput
+ move vSelectedHash -929742000 # Silver Ingot
+ j fOutput
+ move vSelectedHash -290196476 # Silicon ingot
+ j fOutput
+ move vSelectedHash -1406385572 # Nickel ingot
+ j fOutput
+ move vSelectedHash 2134647745 # Lead ingot
+ j fOutput
+ move vSelectedHash -1301215609 # Iron ingot
+ j fOutput
+ move vSelectedHash 226410516 # Gold ingot
+ j fOutput
+ move vSelectedHash -404336834 # Copper ingot
+ j fOutput
+ move vSelectedHash -654790771 # Steel ingot
+ j fOutput
+ move vSelectedHash -82508479 # Solder ingot
+ j fOutput
+ move vSelectedHash -297990285 # Invar ingot
+ j fOutput
+ move vSelectedHash 502280180 # Electrum ingot
+ j fOutput
+ move vSelectedHash 1058547521 # Constantan ingot
+ j fOutput
+ move vSelectedHash 156348098 # Waspaloy ingot
+ j fOutput
+ move vSelectedHash -1897868623 # Stellite ingot
+ j fOutput
+ move vSelectedHash -787796599 # Inconel ingot
+ j fOutput
+ move vSelectedHash 1579842814 # Hastelloy ingot
+ j fOutput
+ move vSelectedHash 412924554 # Astroloy ingot
+ j fOutput
+ move vSelectedHash -1516581844 # Uranium ingot
+ j fOutput
+ move vSelectedHash -916518678 # Silver ore
+ j fOutput
+ move vSelectedHash 1103972403 # Silicon ore
+ j fOutput
+ move vSelectedHash 1830218956 # Nickel ore
+ j fOutput
+ move vSelectedHash -190236170 # Lead ore
+ j fOutput
+ move vSelectedHash 1758427767 # Iron ore
+ j fOutput
+ move vSelectedHash -1348105509 # Gold ore
+ j fOutput
+ move vSelectedHash -707307845 # Copper ore
+ j fOutput
+ move vSelectedHash -983091249 # Cobalt ore
+ j fOutput
+ move vSelectedHash 1724793494 # Coal ore
+ j fOutput
+j main
+
+fOutput:
+s dHashMemory Setting vSelectedHash
+seq vOutputPort vSorterInputHash vSelectedHash
+s dSorter Output vOutputPort
+s dVarDump2 Setting vOutputPort
+j main
+
+fResetDial:
+s dDial Setting 0
+j ra
