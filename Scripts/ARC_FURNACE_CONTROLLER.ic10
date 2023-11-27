@@ -1,18 +1,20 @@
 # Script name: Arc Furnace Controller
 # (WORK IN PROGRESS)
-# Description: 
+# Description:
 # Author: Werner L. Gottschalt
 ## START
 
 alias dFurnace d0
 alias dHash d1
+alias dDisplay d2
 alias rFurnIdle r0
 alias rFurnOccupied r1
 alias rOccupant r2
+alias rOccupantQuantity r3
 
-s dHash Setting 0
 main:
  s dFurnace On 0
+ s dHash Setting 0
  yield
  l rFurnIdle dFurnace Idle
  ls rFurnOccupied dFurnace 0 Occupied
@@ -20,6 +22,8 @@ main:
 j main
 
 furnaceProccess:
+ ls rOccupant dFurnace 0 OccupantHash
+ s dHash Setting rOccupant
  s dFurnace On 1
  yield
  s dFurnace Activate 1
@@ -28,6 +32,8 @@ j waitFurnaceProccess
 waitFurnaceProccess:
  yield
  l rFurnIdle dFurnace Idle
+ ls rOccupantQuantity dFurnace 0 Quantity
+ s dDisplay Setting rOccupantQuantity
  beqz rFurnIdle waitFurnaceProccess
 j main
 
