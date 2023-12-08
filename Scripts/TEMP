@@ -70,3 +70,57 @@ alias logicTransmitter d0
 #s suit Filtration 1
 
 #j start
+
+## FINAL VERSION
+alias dSuit db
+alias dHelmet d0
+alias dBackpack d1
+
+alias rTempIsSafe r8
+alias rPressIsSafe r9
+alias rSafe r10
+
+main:
+ # Check if TemperatureExternal is safe
+ l r0 dSuit TemperatureExternal
+ sgt rTempIsSafe r0 278.15
+ slt r1 r0 308.15
+ and rTempIsSafe rTempIsSafe r1
+ # Check if PressureExternal is safe
+ l r0 dSuit PressureExternal
+ sgt rPressIsSafe r0 50
+ slt r1 r0 130
+ and rPressIsSafe rPressIsSafe r1
+
+ and rSafe rTempIsSafe rPressIsSafe
+
+ s dSuit Setting rSafe
+ # Open/Close Helmet
+ l r0 dHelmet Open
+ beqzal r0 LockUnlockHelmet
+ yield
+ jal OpenCloseHelmet
+j main
+
+LockUnlockHelmet:
+ seqz r0 rSafe
+ s dHelmet Lock r0
+j ra
+
+OpenCloseHelmet:
+ s dHelmet Open rSafe
+ yield
+ jal ToggleLifeSupport
+j ra
+
+ToggleLifeSupport:
+ yield
+ l r0 dHelmet Open
+ seqz r0 r0
+ l dSuit r1 AirRelease
+ breq r0 r1 2
+  s dSuit AirRelease r0
+
+ s dSuit Filtration r0
+ s dSuit On r0
+j ra
