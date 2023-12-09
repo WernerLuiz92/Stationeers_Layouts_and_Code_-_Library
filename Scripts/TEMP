@@ -35,7 +35,15 @@ j ra
 
 OpenCloseHelmet:
  s dHelmet Open rSafe
- yield jal ToggleLifeSupportj mainToggleLifeSupport:
+ yield
+ jal ToggleLifeSupport
+j main
+
+ToggleLifeSupport:
+ yield
+ l r0 dHelmet Open
+ seqz r0 r0
+ l r1 dSuit AirRelease
  breq r0 r1 2
   s dSuit AirRelease r0
  l r1 dSuit Filtration
