@@ -1,77 +1,3 @@
-#Hardsuit safety system.  CowsAreEvil
-#alias suit db
-alias logicTransmitter d0
-
-#alias backpack d1
-
-#alias safe r10
-
-#start:
-#yield
-# Close Helmet
-#l r0 helmet RatioVolatiles
-#slt safe r0 0.01
-#l r0 helmet RatioPollutant
-#slt r1 r0 0.01
-#and safe safe r1
-#l r0 helmet RatioNitrousOxide
-#slt r1 r0 0.01
-#and safe safe r1
-#l r0 helmet Open
-#breqz r0 2
-#s helmet Open safe
-
-#lock
-#l r0 suit TemperatureExternal
-#sgt safe r0 278.15
-#slt r1 r0 318.15
-#and safe safe r1
-#l r0 suit PressureExternal
-#sgt r1 r0 50
-#and safe safe r1
-#slt r1 r0 130
-#and safe safe r1
-
-#l r0 helmet Open
-#breqz r0 2
-#s helmet Open safe
-#seqz r0 safe
-#s helmet Lock r0
-
-#l r0 helmet Open
-#seqz r0 r0
-#s suit AirRelease r0
-#s suit Filtration r0
-#s suit On r0
-#beqz r0 start
-#alarm
-#l r0 suit Setting
-#blt r0 1000 heading
-#l r0 helmet On
-#seqz r0 r0
-#s helmet On r0
-#yield
-#seqz r0 r0
-#s helmet On r0
-#yield
-#Navagation
-#heading:
-#l r0 suit TemperatureSetting
-#bgt r0 293 start
-
-#l r0 suit Setting
-#mod r0 r0 1000
-#s suit AirRelease 0
-#s suit Filtration 0
-#s suit PressureSetting r0
-#yield
-#s suit PressureSetting 50
-#s suit AirRelease 1
-#s suit Filtration 1
-
-#j start
-
-## FINAL VERSION
 alias dSuit db
 alias dHelmet d0
 alias dBackpack d1
@@ -99,7 +25,7 @@ main:
  l r0 dHelmet Open
  beqzal r0 LockUnlockHelmet
  yield
- jal OpenCloseHelmet
+ j OpenCloseHelmet
 j main
 
 LockUnlockHelmet:
@@ -109,18 +35,13 @@ j ra
 
 OpenCloseHelmet:
  s dHelmet Open rSafe
- yield
- jal ToggleLifeSupport
-j ra
-
-ToggleLifeSupport:
- yield
- l r0 dHelmet Open
- seqz r0 r0
- l dSuit r1 AirRelease
+ yield jal ToggleLifeSupportj mainToggleLifeSupport:
  breq r0 r1 2
   s dSuit AirRelease r0
-
- s dSuit Filtration r0
- s dSuit On r0
+ l r1 dSuit Filtration
+ breq r0 r1 2
+  s dSuit Filtration r0
+ l r1 dSuit On
+ breq r0 r1 2
+  s dSuit On r0
 j ra
