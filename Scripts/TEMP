@@ -53,3 +53,24 @@ ToggleLifeSupport:
  breq r0 r1 2
   s dSuit On r0
 j ra
+
+
+
+
+SOLAR
+
+alias dLightSensor d0
+alias rVerticalPos r0
+alias rHorizontalPos r1
+define cVerticalFix 90
+define cHorizontalFix 90
+define cPanels -2045627372
+
+main:
+ l rHorizontalPos dLightSensor Horizontal
+ add rHorizontalPos rHorizontalPos cHorizontalFix
+ sb cPanels Horizontal rHorizontalPos
+ l rVerticalPos dLightSensor Vertical
+ add rVerticalPos rVerticalPos cVerticalFix
+ sb cPanels Vertical rVerticalPos
+j main
