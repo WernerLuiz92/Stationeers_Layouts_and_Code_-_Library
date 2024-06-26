@@ -1,0 +1,89 @@
+ # Define the Hashes
+ # StructureGasSensor
+define dSensorsHash -1252983604
+ # StructurePipeHeater
+define dHeatersHash -419758574
+ # StructureLogicDial
+define dDialsHash 554524804
+ # StructureTurboVolumePump
+define dPumpHash 1310794736
+ # StructurePoweredVentLarge
+define dOutVentHash -785498334
+ # StructureActiveVent
+define dInsVentHash -1129453144
+
+ # Define the Name Hashes
+define dDialMin HASH("BTC Min Temp")
+define dDialMax HASH("BTC Max Temp")
+define dSensors HASH("BTC Gas Sensor")
+define dHeaters HASH("BTC Heater")
+define dOutsideVent HASH("BTC External Vent")
+define dInsideVent HASH("BTC Internal Vent")
+define dPump HASH("BTC Pump")
+
+ # Define Celcius to Kelvin Offset
+define cKelvinOffSet 273.15
+alias TurnOn r10
+alias TurnOff r11
+
+move TurnOn 1
+move TurnOff 0
+
+ # Read the temperatures from sensors
+main:
+    yield
+    move r0 0
+    lbn r0 dSensorsHash dSensors Temperature Average
+ # If no sensors found, repeat Main
+    beq r0 0 main
+
+ # Read the Min and Max values from dials
+    lbn r1 dDialsHash dDialMin Setting Minimum
+    lbn r2 dDialsHash dDialMax Setting Minimum
+ # Convert to Kelvin
+    add r1 r1 cKelvinOffSet
+    add r2 r2 cKelvinOffSet
+
+ # Calc the medium point between Min and Max Temp
+ # r3 = (TempMin + TempMax) / 2
+    add r3 r1 r2
+    div r3 r3 2
+
+ # Verificar se a temperatura est fora dos limites
+ # Check if the temperature is out of limits
+  # If is below Min go to Heat
+    blt r0 r1 heat
+  # If is above Max go to Cool
+    bgt r0 r2 cool
+
+ # Turn off all devices if temp is between limits
+disableAllDevices:
+    sbn dInsVentHash dInsideVent On TurnOff
+    sbn dOutVentHash dOutsideVent On TurnOff
+    sbn dPumpHash dPump On TurnOff
+    sbn dHeatersHash dHeaters On TurnOff
+j main
+
+waitTempCool:
+    yield
+    lbn r0 dSensorsHash dSensors Temperature Average
+    blt r0 r3 disableAllDevices
+j waitTempCool
+
+waitTempHeat:
+    yield
+    lbn r0 dSensorsHash dSensors Temperature Average
+    bgt r0 r3 disableAllDevices
+j waitTempHeat
+
+# Activate the cooling system
+cool:
+    sbn dInsVentHash dInsideVent On TurnOn
+    sbn dOutVentHash dOutsideVent On TurnOn
+j waitTempCool
+
+# Activate the heating system
+heat:
+    sbn dPumpHash dPump On TurnOn
+    sbn dHeatersHash dHeaters On TurnOn
+j waitTempHeat
