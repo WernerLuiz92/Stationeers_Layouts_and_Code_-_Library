@@ -1,3 +1,8 @@
+# Script name: Base Temperature Controller
+# Description:
+# Author: Werner L. Gottschalt
+## START
+
  # Define the Hashes
  # StructureGasSensor
 define dSensorsHash -1252983604
@@ -87,3 +92,5 @@ heat:
     sbn dPumpHash dPump On TurnOn
     sbn dHeatersHash dHeaters On TurnOn
 j waitTempHeat
+
+## END
