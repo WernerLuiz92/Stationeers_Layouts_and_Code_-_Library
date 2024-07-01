@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>133643207649129941</DateTime>
+  <GameVersion>0.2.5025.22811</GameVersion>
+  <Title>GRH_-_GROW_LIGHTS_CONTROLLER</Title>
+  <Description>​</Description>
+  <Author>D4RK GH0ST</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions># Script name: Grow Lights Controller
+# Description:
+# Author: Werner L. Gottschalt
+## START
+
+define GrowLights -1758710260
+
+alias DaylightSensor d0
+alias LightTimeDial d1
+alias SolarAngleDisplay d2
+alias SunLight r12
+alias MaxSunLight r13
+
+Main:
+l SunLight DaylightSensor SolarAngle
+l MaxSunLight LightTimeDial Setting
+s SolarAngleDisplay Setting SunLight
+#if SunLight less than MaxSunLight GrowLights = ON
+brgt SunLight MaxSunLight 3
+ s SolarAngleDisplay Color 3
+ sb GrowLights On 1
+
+
+brlt SunLight MaxSunLight 3
+ s SolarAngleDisplay Color 1
+ sb GrowLights On 0
+j Main
+
+## END</Instructions>
+</InstructionData>
