@@ -1,0 +1,93 @@
+# Script name: Unloader to Furnace Controller
+# (WORK IN PROGRESS)
+# Description: This script controls a dumper that
+#    unloads the items contained in a mining
+#    backpack. Sends ores to a furnace and items
+#    that cannot be processed in the furnace are
+#    sent out of the system.
+# At the end, send the backpack out too.
+# Author: Werner L. Gottschalt
+
+# Define the devices
+alias dUnloader d0
+alias dSorter d1
+#alias dFurnace d2
+#alias dHashMem d3
+#alias dHashDisp d4
+
+alias dd1 d2
+alias dd2 d5
+alias dLever d4
+
+# Define the registrators
+alias rSorterInputSlot r0
+alias rSorterInputClass r1
+alias rBusy r2
+alias rDump r3
+
+# Define the constants
+define cIngot 19 # Ingot Class
+define cSorterMode 2 # Logic Mode
+define cOutputIngot 0 # Right Side
+define cOutputOther 1 # Left Side
+define cCoal 1724793494
+define cUran -1516581844
+define cCoba -983091249
+
+start:
+ yield
+ # Set the sorter to logic mode
+ s dSorter Mode cSorterMode
+ s dSorter Output cOutputIngot
+ #s dHashMem Setting 0
+ s dLever Open 0
+
+ main:
+  # Get the input slot and class
+  ls rSorterInputSlot dSorter 0 Occupied
+  ls rSorterInputClass dSorter 0 Class
+
+  s dd1 Setting rSorterInputSlot
+  s dd2 Setting rSorterInputClass
+  s dLever Open 1
+
+  jal waitForDump
+  # If the sorter is empty, wait for it to fill
+  # beq vSorterInputSlot 0 main
+
+  # If the printer is purging, send the item to the
+  # other side
+  # beq vPrinterAccept cPrinterNotAccept otherPort
+
+  # If the item is an ingot, send it to the printer
+  # beq rSorterInputClass cIngot furnacePort
+
+  # If the item is not an ingot, send it to the
+  # other side
+  # bne rSorterInputClass cIngot outPort
+ j main
+j start
+
+furnacePort:
+ s dSorter Output cOutputIngot
+j start
+
+outPort:
+ s dSorter Output cOutputOther
+j start
+
+waitForDevices:
+ yield
+ ls rBusy dSorter 0 Occupied
+ bgtz rBusy waitForDevices
+ ls rBusy dSorter 1 Occupied
+ bgtz rBusy waitForDevices
+ ls rBusy dSorter 2 Occupied
+ bgtz rBusy waitForDevices
+j ra
+
+waitForDump:
+ yield
+ l rDump dLever Open
+ bgtz rDump waitForDump
+j outPort

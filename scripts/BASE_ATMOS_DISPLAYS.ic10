@@ -1,0 +1,54 @@
+# Script name: Base Atmosphere Displays Controller
+# Description:
+# Author: Werner L. Gottschalt
+## START
+
+define Sensor HASH("Base Gas Sensor")
+define N2Display HASH("Display (N2)")
+define Co2Display HASH("Display (CO2)")
+define O2Display HASH("Display (O2)")
+define N2ODisplay HASH("Display (N2O)")
+define XDisplay HASH("Display (X)")
+define VolDisplay HASH("Display (VOL)")
+define PumpHash 1310794736
+define LedDisplayHash -815193061
+define SensorHash -1252983604
+
+alias DisplayMode r10
+alias DisplayColor r11
+
+# Set displays to mode Percentage
+sbn LedDisplayHash N2Display Mode DisplayMode
+sbn LedDisplayHash Co2Display Mode DisplayMode
+sbn LedDisplayHash O2Display Mode DisplayMode
+sbn LedDisplayHash N2ODisplay Mode DisplayMode
+sbn LedDisplayHash XDisplay Mode DisplayMode
+sbn LedDisplayHash VolDisplay Mode DisplayMode
+
+# Set displays colors
+move DisplayColor 3
+sbn LedDisplayHash Co2Display Color DisplayColor
+move DisplayColor 2
+sbn LedDisplayHash O2Display Color DisplayColor
+sbn LedDisplayHash N2Display Color DisplayColor
+move DisplayColor 4
+sbn LedDisplayHash N2ODisplay Color DisplayColor
+sbn LedDisplayHash XDisplay Color DisplayColor
+sbn LedDisplayHash VolDisplay Color DisplayColor
+
+Main:
+ lbn r0 SensorHash Sensor RatioNitrogen Average
+ sbn LedDisplayHash N2Display Setting r0
+ lbn r0 SensorHash Sensor RatioCarbonDioxide Average
+ sbn LedDisplayHash Co2Display Setting r0
+ lbn r0 SensorHash Sensor RatioOxygen Average
+ sbn LedDisplayHash O2Display Setting r0
+ lbn r0 SensorHash Sensor RatioNitrousOxide Average
+ sbn LedDisplayHash N2ODisplay Setting r0
+ lbn r0 SensorHash Sensor RatioPollutant Average
+ sbn LedDisplayHash XDisplay Setting r0
+ lbn r0 SensorHash Sensor RatioVolatiles Average
+ sbn LedDisplayHash VolDisplay Setting r0
+j Main
+
+## END
