@@ -1,0 +1,21 @@
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <DateTime>1719858826967095</DateTime>
+    <GameVersion>0.2.5025.22811</GameVersion>
+    <Title>UTL_-_EXAMPLE</Title>
+    <Description />
+    <Author>D4RK GH0ST</Author>
+    <WorkshopFileHandle>0</WorkshopFileHandle>
+    <Instructions># Script name: 
+# Description: 
+# Author: Werner L. Gottschalt
+## START
+
+main:
+
+ # Code
+
+j main
+
+## END</Instructions>
+</InstructionData>

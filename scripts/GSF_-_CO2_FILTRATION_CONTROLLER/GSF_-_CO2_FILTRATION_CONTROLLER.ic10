@@ -1,0 +1,54 @@
+# Script name: CO2 Filtration Controller
+# Description:
+# Author: Werner L. Gottschalt
+## START
+
+ # StructureActiveVent
+define hActVent -1129453144 
+
+ # Define the Name Hashes
+define nActVent HASH("CO2 - Active Vent")
+
+alias locked r10
+alias inward r11
+alias targetPress r12
+alias targetPercentage r13
+
+move locked 1
+move inward 1
+move targetPress 2500
+move targetPercentage 0.02
+
+sbn hActVent nActVent Lock locked
+sbn hActVent nActVent Mode inward
+sbn hActVent nActVent PressureInternal targetPress
+
+start:
+ yield
+ l r0 db RatioCarbonDioxideOutput
+ slt r0 r0 targetPercentage
+ # If r0 == 0 go to disableFiltration
+ beqz r0 disableFiltration
+ # If r0 == 1 go to enableFiltration
+ bnez r0 enableFiltration
+j start
+
+enableFiltration:
+ yield
+ s db Mode r0
+ sbn hActVent nActVent On r0
+
+ l r0 db RatioCarbonDioxideOutput
+ slt r0 r0 targetPercentage
+
+ beqz r0 disableFiltration
+j enableFiltration
+
+disableFiltration:
+ yield
+ move r0 0
+ s db Mode r0
+ sbn hActVent nActVent On r0
+j start
+
+## END

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>133643203139781206</DateTime>
+  <GameVersion>0.2.5025.22811</GameVersion>
+  <Title>BBA_-_MAIN_POWER_BACKUP_CONTROLLER</Title>
+  <Description>​</Description>
+  <Author>D4RK GH0ST</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>#alias GENERATOR d0
+#alias DISPLAY d1
+
+alias BatteriesLevel r10
+alias GeneratorState r11
+#alias DisplayColor r12
+
+# Small Batteries
+#define BatteriesHash -400115994
+# Large Batteries
+define BatteriesHash -1388288459
+define GeneratorsHash 813146305
+define MinBatteryLevel 0.1
+define MaxBatteryLevel 0.95
+
+define Generators HASH("SAS Generator")
+define Batteries HASH("SAS Battery")
+
+#define DisplayMode 1
+#define FullColor 0
+#define NormalColor 2
+#define MidColor 5
+#define LowColor 3
+#define CriticalColor 4
+
+main:
+ # Carrega a media da porcentagem das baterias
+ lbn BatteriesLevel BatteriesHash Batteries Ratio Average
+s db Setting BatteriesLevel
+
+ # Verifica o nivel das baterias e troca as cores do display de acordo
+ # CriticalColor (Red) -&gt; 0 to 0.2
+ sgt r0 BatteriesLevel 0
+ slt r1 BatteriesLevel 0.2
+ and r2 r0 r1
+ breqz r2 2
+#  move DisplayColor CriticalColor
+#  jal setDisplay
+
+ # LowColor (Orange) -&gt; 0.2 to 0.5
+ sgt r0 BatteriesLevel 0.2
+ slt r1 BatteriesLevel 0.5
+ and r2 r0 r1
+ breqz r2 2
+#  move DisplayColor LowColor
+#  jal setDisplay
+
+ # MidColor (Yellow) -&gt; 0.5 to 0.75
+ sgt r0 BatteriesLevel 0.5
+ slt r1 BatteriesLevel 0.75
+ and r2 r0 r1
+ breqz r2 2
+#  move DisplayColor MidColor
+#  jal setDisplay
+
+ # NormalColor (Green) -&gt; 0.75 to 0.95
+ sgt r0 BatteriesLevel 0.75
+ slt r1 BatteriesLevel 0.95
+ and r2 r0 r1
+ breqz r2 2
+#  move DisplayColor NormalColor
+#  jal setDisplay
+
+ # FullColor (Blue) -&gt; 0.95 to 1
+ sgt r0 BatteriesLevel 0.95
+ slt r1 BatteriesLevel 1
+ and r2 r0 r1
+ breqz r2 2
+#  move DisplayColor FullColor
+#  jal setDisplay
+
+
+ # Verifica se o nivel das baterias esta abaixo do minimo
+ blt BatteriesLevel MinBatteryLevel turnOnGenerator
+
+ # Verifica se o nivel das baterias esta acima do maximo
+ bgt BatteriesLevel MaxBatteryLevel turnOffGenerator
+j main # Volta para o inicio
+
+turnOnGenerator:
+ # Liga o gerador
+ move GeneratorState 1
+ sbn GeneratorsHash Generators On GeneratorState
+j main # Volta para o inicio
+
+turnOffGenerator:
+ # Desliga o gerador
+ move GeneratorState 0
+ sbn GeneratorsHash Generators On GeneratorState
+j main # Volta para o inicio
+
+#setDisplay:
+# s DISPLAY Mode DisplayMode
+# s DISPLAY Color DisplayColor
+# s DISPLAY Setting BatteriesLevel
+#j ra</Instructions>
+</InstructionData>

@@ -1,0 +1,56 @@
+# Script name: Strobo Lights (WORK IN PROGRESS)
+# Description: This script is used to control two lights and
+# toggle them on and off to a visual effect.
+# Author: Werner L. Gottschalt
+## START
+
+alias Lamp1 d1
+alias Lamp2 d2
+alias Trigger d3
+
+alias L1State r0
+alias L2State r1
+alias TState r2
+
+s Lamp1 On 1
+move L1State 1
+s Lamp2 On 0
+move L2State 0
+
+main:
+	l TState Trigger Setting
+	beqal TState 1 unlock
+	beqal TState 0 lock
+	jal toggleLights
+j main
+
+toggleLights:
+	l L1State Lamp1 On
+	l L2State Lamp2 On
+	
+	beqal L1State L2State reset
+	
+	seqz L1State L1State
+	s Lamp1 On L1State
+	seqz L2State L2State
+	s Lamp2 On L2State
+j ra
+
+unlock:
+s Lamp1 Lock 0
+s Lamp2 Lock 0
+j ra
+
+lock:
+s Lamp1 Lock 1
+s Lamp2 Lock 1
+j ra
+
+reset:
+s Lamp1 On 1
+move L1State 1
+s Lamp2 On 0
+move L2State 0
+j ra
+
+## END

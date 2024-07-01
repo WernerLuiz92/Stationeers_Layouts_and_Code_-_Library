@@ -1,0 +1,63 @@
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<DateTime>1719858826966888</DateTime>
+	<GameVersion>0.2.5025.22811</GameVersion>
+	<Title>GSF_-_GAS_CANNISTER_CONTROLLER</Title>
+	<Description />
+	<Author>D4RK GH0ST</Author>
+	<WorkshopFileHandle>0</WorkshopFileHandle>
+	<Instructions># Script name: Gas Tank Storage Controller (WORK IN PROGRESS)
+# Description: This script is used to control the Gas Tank Storage
+# 				room. It will read the data from the Gas Cannister
+# 				and if the occupant is damaged, it will display	a
+# 				red light on the output. If the occupant is not
+# 				and the cannister is empty, it will activate a
+# 				pump to fill the cannister until it is 90% of the
+# 				maximum pressure. If the occupant is
+# 				filled and the gas is the same as the stored
+# 				gas, it will display a green light on the output
+# 				and allow emptying of the cannister to the
+# 				storage room.
+# Author: Werner L. Gottschalt
+
+alias dGasTank d0
+alias dOutput1 d1
+alias dOutput2 d2
+alias dLampError d3
+alias dLampPass d5
+alias mHash d4
+
+alias vOccupied r0
+alias vOccupantPressure r1
+alias vOccupantDamage r2
+alias vOccupantHash r3
+alias vHasDamage r4
+alias vHasNotDamage r5
+
+main:
+	# Read the data from the Gas Tank
+	ls vOccupied dGasTank 0 Occupied
+	ls vOccupantPressure dGasTank 0 Pressure
+	ls vOccupantDamage dGasTank 0 Damage
+	ls vOccupantHash dGasTank 0 OccupantHash
+	s dOutput1 Setting vOccupied
+	div vOccupantPressure vOccupantPressure 1000
+	s dOutput2 Setting vOccupantPressure
+	sgtz vHasDamage vOccupantDamage
+	beqal vHasDamage 1 hasDamage
+	beqal vHasDamage 0 hasNotDamage
+	s dLampError On vHasDamage
+	s dLampPass On vHasNotDamage
+	s mHash Setting vOccupantHash
+j main
+
+hasDamage:
+s dOutput1 Color 4
+move vHasNotDamage 0
+j ra
+
+hasNotDamage:
+s dOutput1 Color 2
+move vHasNotDamage 1
+j ra</Instructions>
+</InstructionData>
