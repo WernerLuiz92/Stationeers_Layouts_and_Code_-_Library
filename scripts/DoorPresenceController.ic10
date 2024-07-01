@@ -1,0 +1,23 @@
+alias dDoor d0
+alias dSensor d1
+
+alias vPresence r0
+alias vDoorState r1
+
+main:
+	l vPresence dSensor Activate
+	l vDoorState dDoor Open
+	beqz vPresence CloseDoor
+	bnez vPresence OpenDoor
+j main
+
+OpenDoor:
+bnez vDoorState main
+s dDoor Open 1
+j main
+
+CloseDoor:
+beqz vDoorState main
+sleep 3
+s dDoor Open 0
+j main
