@@ -1,8 +1,4 @@
 # Script name: Auto Harvest Controller
-# Description: 
-# Author: Werner L. Gottschalt
-## START
-
 define Wait 2#Time between cycles. Increase in case of issues
 define Planter -1841632400 
 define HarvieA 958056199 
@@ -122,5 +118,3 @@ breqz r2 3
 #Schedule Clear Order for this plot on next cycle
 or ClearList ClearList Counter
 j ra
-
-## END
