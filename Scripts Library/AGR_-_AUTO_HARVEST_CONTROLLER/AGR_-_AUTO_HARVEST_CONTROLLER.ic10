@@ -1,5 +1,5 @@
 # Script name: Auto Harvest Controller
-define Wait 2#Time between cycles. Increase in case of issues
+define Wait 2#Time cycles. Increase if issue
 define Planter -1841632400 
 define HarvieA 958056199 
 define HarvieB -271480358
@@ -14,11 +14,11 @@ alias Maturity r11
 alias AutoReplant r12
 alias ForceClear r13
 alias ClearList r14
-alias Counter r15#Reset Clear Order list at the start
+alias Counter r15#Reset Clear Order list at start
 move ClearList 0
-move Maturity 5#Plant Maturity: 4=fruitling 5=seeding -1=Empty
-move ForceClear 0#Should Harvie clear Parennial plants after harvest
-move AutoReplant 1 #Replant after harvest: 1=Enable 0=Disable
+move Maturity 5#4=fruitling 5=seeding -1=Empty
+move ForceClear 0#Should clear plants after harvest
+move AutoReplant 1 #Replant 1=Enable 0=Disable
 
 Start:
 #Reset Counter
